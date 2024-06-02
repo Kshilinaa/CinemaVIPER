@@ -4,33 +4,33 @@
 import Foundation
 import KeychainSwift
 
-/// Хранилище для токена
+/// Для управления хранением токена доступа
 class KeychainService {
     // MARK: - Constants
 
     enum Constants {
-        static let tokenKey = "Token2"
-        static let error = "Failed to load token"
+        static let tokenKey = "TokenKey"
     }
 
     // MARK: - Public Properties
-
+    /// Общий экземпляр, для доступа к хранилищу
     static let shared = KeychainService()
 
-    func getToken() -> String? {
-        if let token = keychain.get(Constants.tokenKey) {
-            return token
-        } else {
-            return nil
+    var token: String? {
+        get {
+            keychain.get(Constants.tokenKey)
+        }
+        set {
+            if let token = newValue {
+                keychain.set(token, forKey: Constants.tokenKey)
+            } else {
+                keychain.delete(Constants.tokenKey)
+            }
         }
     }
 
-    func setToken(token: String) {
-        keychain.set(token, forKey: Constants.tokenKey)
-    }
-
     // MARK: - Private Properties
-
+    /// Экземпляр KeychainSwift для взаимодействия с хранилищем ключей
     private let keychain = KeychainSwift()
 
     // MARK: - Initializers
